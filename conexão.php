@@ -3,13 +3,13 @@
 // Informações de acesso ao banco de dados
 
 $servidor = "localhost";
-$usuario = "root";
+$usuarios = "root";
 $senha = "";
 $banco = "sistema_crud";
 
 // Criação da conexão com o banco de dados
 
-$conn = new mysqli($servidor, $usuario, $senha, $banco);
+$conn = new mysqli($servidor, $usuarios, $senha, $banco);
 
 // Verificando conexão
 

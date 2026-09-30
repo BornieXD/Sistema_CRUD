@@ -15,7 +15,7 @@ if (isset($_POST['cadastrar'])){
 
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sss", $nome, $email, $senha_hash);
@@ -29,7 +29,7 @@ if (isset($_POST['cadastrar'])){
     $stmt->close();
 }
 
-$sql_usuarios = "SELECT id, nome, email FROM usuario";
+$sql_usuarios = "SELECT id, nome, email FROM usuarios";
 $resultado = $conn->query($sql_usuarios);
 
 ?>
@@ -79,12 +79,12 @@ $resultado = $conn->query($sql_usuarios);
         <th>Email</th>
     </tr>
 
-    <?php while ($usuario = $resultado->fetch_assoc()) { ?>
+    <?php while ($usuarios = $resultado->fetch_assoc()) { ?>
 
         <tr>
-            <td><?php echo $usuario['id']; ?></td>
-            <td><?php echo $usuario['nome']; ?></td>
-            <td><?php echo $usuario['email']; ?></td>
+            <td><?php echo $usuarios['id']; ?></td>
+            <td><?php echo $usuarios['nome']; ?></td>
+            <td><?php echo $usuarios['email']; ?></td>
         </tr>
 
     <?php } ?>
