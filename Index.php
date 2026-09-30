@@ -29,6 +29,28 @@ if (isset($_POST['cadastrar'])){
     $stmt->close();
 }
 
+// Alterar cadastro de usuário 
+
+if (isset($_POST['atualizar'])) {
+
+    $id = $_POST['id'];
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+
+    $sql = "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssi", $nome, $email, $id);
+
+    if ($stmt->execute()) {
+        echo "Usuário alterado com sucesso!";
+    } else {
+        echo "Erro ao alterar usuário.";
+    }
+
+    $stmt->close();
+}
+
 $sql_usuarios = "SELECT id, nome, email FROM usuarios";
 $resultado = $conn->query($sql_usuarios);
 
