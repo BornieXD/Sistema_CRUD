@@ -10,7 +10,27 @@ if (isset($_POST['cadastrar'])){
     $nome = $_POST['nome'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
+
+    // Cadastra usuário no banco de dados, utilizando proteção de senha (CREATE)
+
+    $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $nome, $email, $senha_hash);
+
+    if ($stmt->execute()) {
+        echo "Usuário cadastrado com sucesso!";
+    } else {
+        echo "Erro ao cadastrar usuário. Por favor, verifique as informações registradas e tente novamente!";
+    }
+
+    $stmt->close();
 }
+
+$sql_usuarios = "SELECT id, nome, email FROM usuario";
+$resultado = $conn->query($sql_usuarios);
 
 ?>
 
@@ -44,6 +64,32 @@ if (isset($_POST['cadastrar'])){
     <button type="submit" name="cadastrar">Cadastrar</button>
     
 </form>
+
+
+
+<!-- Lista de usuários cadastrados (READ) -->
+
+<h2>Usuários cadastrados</h2>
+
+<table border="1">
+
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+    </tr>
+
+    <?php while ($usuario = $resultado->fetch_assoc()) { ?>
+
+        <tr>
+            <td><?php echo $usuario['id']; ?></td>
+            <td><?php echo $usuario['nome']; ?></td>
+            <td><?php echo $usuario['email']; ?></td>
+        </tr>
+
+    <?php } ?>
+
+</table>
     
 </body>
 </html>
