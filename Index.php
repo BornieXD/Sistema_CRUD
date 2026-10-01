@@ -51,6 +51,22 @@ if (isset($_POST['atualizar'])) {
     $stmt->close();
 }
 
+if (isset($_POST['editar'])) {
+
+    $id = $_POST['id'];
+
+    $sql = "SELECT id, nome, email FROM usuarios WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $resultado_edicao = $stmt->get_result();
+    $usuario_edicao = $resultado_edicao->fetch_assoc();
+
+    $stmt->close();
+}
+
 $sql_usuarios = "SELECT id, nome, email FROM usuarios";
 $resultado = $conn->query($sql_usuarios);
 
@@ -87,7 +103,27 @@ $resultado = $conn->query($sql_usuarios);
     
 </form>
 
+<?php if (isset($usuario_edicao)) { ?>
 
+    <h2>Editar Usuário</h2>
+
+    <form method="POST">
+
+        <input type="hidden" name="id" value="<?php echo $usuario_edicao['id']; ?>">
+
+        <label>Nome:</label>
+        <input type="text" name="nome" value="<?php echo htmlspecialchars($usuario_edicao['nome']); ?>" required>
+        <br><br>
+
+        <label>Email:</label>
+        <input type="email" name="email" value="<?php echo htmlspecialchars($usuario_edicao['email']); ?>" required>
+        <br><br>
+
+        <button type="submit" name="atualizar">Salvar alterações</button>
+
+    </form>
+
+<?php } ?>
 
 <!-- Lista de usuários cadastrados (READ) -->
 
@@ -99,6 +135,7 @@ $resultado = $conn->query($sql_usuarios);
         <th>ID</th>
         <th>Nome</th>
         <th>Email</th>
+        <th>Ações</th>
     </tr>
 
     <?php while ($usuarios = $resultado->fetch_assoc()) { ?>
@@ -107,6 +144,13 @@ $resultado = $conn->query($sql_usuarios);
             <td><?php echo $usuarios['id']; ?></td>
             <td><?php echo $usuarios['nome']; ?></td>
             <td><?php echo $usuarios['email']; ?></td>
+
+            <td>
+                <form method="POST">
+                    <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
+                    <button type="submit" name="editar">Editar</button>
+                </form>
+            </td>
         </tr>
 
     <?php } ?>
