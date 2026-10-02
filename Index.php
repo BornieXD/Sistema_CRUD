@@ -29,7 +29,7 @@ if (isset($_POST['cadastrar'])){
     $stmt->close();
 }
 
-// Alterar cadastro de usuário 
+// Alterar cadastro de usuário
 
 if (isset($_POST['atualizar'])) {
 
@@ -46,6 +46,25 @@ if (isset($_POST['atualizar'])) {
         echo "Usuário alterado com sucesso!";
     } else {
         echo "Erro ao alterar usuário.";
+    }
+
+    $stmt->close();
+}
+
+// Excluir cadastro de usuário (DELETE)
+if (isset($_POST['excluir'])) {
+
+    $id = $_POST['id'];
+
+    $sql = "DELETE FROM usuarios WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo "Usuário excluído com sucesso!";
+    } else {
+        echo "Erro ao excluir usuário.";
     }
 
     $stmt->close();
@@ -138,22 +157,30 @@ $resultado = $conn->query($sql_usuarios);
         <th>Ações</th>
     </tr>
 
-    <?php while ($usuarios = $resultado->fetch_assoc()) { ?>
+<!-- Exibe os usuários cadastrados e disponibiliza as opções de editar ou excluir cada usuário. -->    
 
-        <tr>
-            <td><?php echo $usuarios['id']; ?></td>
-            <td><?php echo $usuarios['nome']; ?></td>
-            <td><?php echo $usuarios['email']; ?></td>
+<?php while ($usuarios = $resultado->fetch_assoc()) { ?>
 
-            <td>
-                <form method="POST">
-                    <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
-                    <button type="submit" name="editar">Editar</button>
-                </form>
-            </td>
-        </tr>
+    <tr>
+        <td><?php echo $usuarios['id']; ?></td>
+        <td><?php echo $usuarios['nome']; ?></td>
+        <td><?php echo $usuarios['email']; ?></td>
 
-    <?php } ?>
+        <td>
+            <form method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
+                <button type="submit" name="editar">Editar</button>
+            </form>
+
+            <form method="POST" style="display:inline;"
+                  onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
+                <button type="submit" name="excluir">Excluir</button>
+            </form>
+        </td>
+    </tr>
+
+<?php } ?>
 
 </table>
     
