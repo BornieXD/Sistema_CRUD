@@ -25,6 +25,25 @@ if (isset($_POST['cadastrar'])) {
     $stm->close();
 }
 
+// Excluir Produto
+
+if(isset($_POST['excluir'])) {
+
+   $id = $_POST['id'];
+
+    $sql = "DELETE FROM produtos WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    if  ($stmt->execute()) {
+        echo "Produto excluído com sucesso!";
+    } else {
+        echo "Erro ao excluir produto.";
+    }
+
+    $stmt->close();
+}
+
 // Buscar produto para edição
    
 if (isset($_POST['editar'])) {
@@ -181,6 +200,13 @@ $resultado = $conn->query($sql_produtos);
         <button type="submit" name="editar">
             Editar
         </button>
+
+
+        <button type="submit" name="excluir"
+                onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+            Excluir
+         </button>
+
     </form>
 </td>
 
