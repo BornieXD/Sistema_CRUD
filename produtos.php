@@ -25,6 +25,58 @@ if (isset($_POST['cadastrar'])) {
     $stm->close();
 }
 
+// Buscar produto para edição
+   
+if (isset($_POST['editar'])) {
+
+    $id = $_POST['id'];
+
+    $sql = "SELECT id, nome, autor, preco, quantidade
+            FROM produtos WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $resultado_edicao = $stmt->get_result();
+    $produto_edicao = $resultado_edicao->fetch_assoc();
+
+    $stmt->close();
+}
+
+// Atualizar produto
+if (isset($_POST['atualizar'])) {
+
+    $id = $_POST['id'];
+    $nome = $_POST['nome'];
+    $autor = $_POST['autor'];
+    $preco = $_POST['preco'];
+    $quantidade = $_POST['quantidade'];
+
+    $sql = "UPDATE produtos
+            SET nome = ?, autor = ?, preco = ?, quantidade = ?
+            WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "ssdii",
+        $nome,
+        $autor,
+        $preco,
+        $quantidade,
+        $id
+    );
+
+    if ($stmt->execute()) {
+        echo "Produto alterado com sucesso!";
+    } else {
+        echo "Erro ao alterar produto.";
+    }
+
+    $stmt->close();
+}
+
+
 // Listar produtos
 
 $sql_produtos = "SELECT id, nome, autor, preco, quantidade FROM produtos";
@@ -72,6 +124,34 @@ $resultado = $conn->query($sql_produtos);
 
 </form>
 
+
+<?php if (isset($produto_edicao)) { ?>
+    <h2>Editar Produto</h2>
+
+    <form method="POST">
+        <input type="hidden" name="id" value="<?php echo $produto_edicao['id']; ?>">
+
+        <label>Nome do Livro:</label>
+        <input type="text" name="nome" value="<?php echo htmlspecialchars($produto_edicao['nome']); ?>" required>
+        <br><br>
+
+        <label>Autor:</label>
+        <input type="text" name="autor" value="<?php echo htmlspecialchars($produto_edicao['autor']); ?>" required>
+        <br><br>
+
+        <label>Preço:</label>
+        <input type="number" name="preco" step="0.01" min="0" value="<?php echo $produto_edicao['preco']; ?>" required>
+        <br><br>
+
+        <label>Quantidade:</label>
+        <input type="number" name="quantidade" min="0" step="1" value="<?php echo $produto_edicao['quantidade']; ?>" required>
+        <br><br>
+
+        <button type="submit" name="atualizar">Salvar alterações</button>
+    </form>
+<?php } ?>
+
+
 <h2>Produtos Cadastrados</h2>
 
 <table border="1">
@@ -82,6 +162,7 @@ $resultado = $conn->query($sql_produtos);
         <th>Autor</th>
         <th>Preço</th>
         <th>Quantidade</th>
+        <th>Ações</th>
     </tr>
 
     <?php while ($produto = $resultado->fetch_assoc()) { ?>
@@ -91,6 +172,18 @@ $resultado = $conn->query($sql_produtos);
             <td><?php echo htmlspecialchars($produto['autor']); ?></td>
             <td><?php echo htmlspecialchars($produto['preco']); ?></td>
             <td><?php echo htmlspecialchars($produto['quantidade']); ?></td>
+            
+            <td>
+    <form method="POST">
+        <input type="hidden" name="id"
+               value="<?php echo $produto['id']; ?>">
+
+        <button type="submit" name="editar">
+            Editar
+        </button>
+    </form>
+</td>
+
         </tr>
 
         <?php } ?>
