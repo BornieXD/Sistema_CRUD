@@ -2,6 +2,8 @@
 
 include 'conexão.php';
 
+$mensagem = "";
+$tipo_mensagem = "sucesso";
 
 // Pega os valores informados pelo usuário no formulário
 
@@ -20,10 +22,12 @@ if (isset($_POST['cadastrar'])){
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sss", $nome, $email, $senha_hash);
 
+
     if ($stmt->execute()) {
-        echo "Usuário cadastrado com sucesso!";
+        $mensagem = "Usuário cadastrado com sucesso!";
     } else {
-        echo "Erro ao cadastrar usuário. Por favor, verifique as informações registradas e tente novamente!";
+        $mensagem = "Erro ao cadastrar usuário. Por favor, verifique as informações registradas e tente novamente!";
+        $tipo_mensagem = "erro";
     }
 
     $stmt->close();
@@ -43,9 +47,10 @@ if (isset($_POST['atualizar'])) {
     $stmt->bind_param("ssi", $nome, $email, $id);
 
     if ($stmt->execute()) {
-        echo "Usuário alterado com sucesso!";
+        $mensagem = "Usuário alterado com sucesso!";
     } else {
-        echo "Erro ao alterar usuário.";
+        $mensagem = "Erro ao alterar usuário.";
+        $tipo_mensagem = "erro";
     }
 
     $stmt->close();
@@ -62,9 +67,10 @@ if (isset($_POST['excluir'])) {
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        echo "Usuário excluído com sucesso!";
+        $mensagem = "Usuário excluído com sucesso!";
     } else {
-        echo "Erro ao excluir usuário.";
+        $mensagem = "Erro ao excluir usuário.";
+        $tipo_mensagem = "erro";
     }
 
     $stmt->close();
@@ -96,10 +102,16 @@ $resultado = $conn->query($sql_usuarios);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
     <title>Sistema CRUD</title>
 </head>
 <body>
 
+    <?php if (!empty($mensagem)) { ?>
+        <div class="notificacao <?php echo $tipo_mensagem; ?>">
+            <?php echo htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8'); ?>
+        </div>
+    <?php } ?>
 
 <!--Formulário de cadastro de usuários-->
 
@@ -140,6 +152,10 @@ $resultado = $conn->query($sql_usuarios);
 
         <button type="submit" name="atualizar">Salvar alterações</button>
 
+            <a href="Index.php" class="botao-cancelar-edicao">
+                Cancelar edição
+            </a>
+
     </form>
 
 <?php } ?>
@@ -157,32 +173,118 @@ $resultado = $conn->query($sql_usuarios);
         <th>Ações</th>
     </tr>
 
-<!-- Exibe os usuários cadastrados e disponibiliza as opções de editar ou excluir cada usuário. -->    
+    <!-- Exibe os usuários cadastrados e disponibiliza as opções de editar ou excluir cada usuário. -->    
 
-<?php while ($usuarios = $resultado->fetch_assoc()) { ?>
+    <?php while ($usuarios = $resultado->fetch_assoc()) { ?>
 
-    <tr>
-        <td><?php echo $usuarios['id']; ?></td>
-        <td><?php echo $usuarios['nome']; ?></td>
-        <td><?php echo $usuarios['email']; ?></td>
+        <tr>
+            <td><?php echo $usuarios['id']; ?></td>
+            <td><?php echo $usuarios['nome']; ?></td>
+            <td><?php echo $usuarios['email']; ?></td>
 
-        <td>
-            <form method="POST" style="display:inline;">
-                <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
-                <button type="submit" name="editar">Editar</button>
-            </form>
+            <td>
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
+                    <button type="submit" name="editar">Editar</button>
+                </form>
 
-            <form method="POST" style="display:inline;"
-                  onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
-                <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
-                <button type="submit" name="excluir">Excluir</button>
-            </form>
-        </td>
-    </tr>
 
-<?php } ?>
+                <form method="POST" style="display:inline;"
+                    onsubmit="return confirmarExclusao(this);">
+                    <input type="hidden" name="id" value="<?php echo $usuarios['id']; ?>">
+                    <button type="submit" name="excluir">Excluir</button>
+                </form>
+
+            </td>
+        </tr>
+
+    <?php } ?>
 
 </table>
-    
+
+    <div id="modalConfirmacao" class="modal-confirmacao">
+        <div class="caixa-confirmacao">
+            <h2>Confirmar exclusão</h2>
+
+            <p>
+                Tem certeza que deseja excluir este usuário?
+                Essa ação não poderá ser desfeita.
+            </p>
+
+            <div class="botoes-confirmacao">
+                <button type="button"
+                        class="botao-cancelar"
+                        onclick="fecharConfirmacao()">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="botao-excluir"
+                        onclick="executarExclusao()">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script responsável por exibir notificações de sucesso e erro e removê-las automaticamente após alguns segundos. -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const notificacoes = document.querySelectorAll(".notificacao");
+
+            notificacoes.forEach(function (notificacao) {
+                setTimeout(function () {
+                    notificacao.classList.add("saindo");
+
+                    setTimeout(function () {
+                        notificacao.remove();
+                    }, 1000);
+                }, 3000);
+            });
+        });
+    </script>
+
+    <!-- Script responsável por controlar a janela de confirmação antes da exclusão de um usuário, permitindo confirmar ou cancelar a operação. -->
+    <script>
+        let formularioExclusao = null;
+
+        function confirmarExclusao(formulario) {
+            formularioExclusao = formulario;
+
+            document.getElementById("modalConfirmacao")
+                .classList.add("ativo");
+
+            return false;
+        }
+
+        function fecharConfirmacao() {
+            document.getElementById("modalConfirmacao")
+                .classList.remove("ativo");
+
+            formularioExclusao = null;
+        }
+
+        function executarExclusao() {
+            if (formularioExclusao) {
+                const formulario = formularioExclusao;
+
+                fecharConfirmacao();
+
+                formulario.removeAttribute("onsubmit");
+
+                formulario.requestSubmit(
+                    formulario.querySelector('button[name="excluir"]')
+                );
+            }
+        }
+
+        document.getElementById("modalConfirmacao")
+            .addEventListener("click", function(evento) {
+                if (evento.target === this) {
+                    fecharConfirmacao();
+                }
+            });
+    </script>
+
 </body>
 </html>

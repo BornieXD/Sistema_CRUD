@@ -1,0 +1,316 @@
+
+/* ===== CONFIGURAÇÕES GERAIS ===== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 25px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f7f4;
+    color: #26352c;
+    line-height: 1.3;
+}
+
+/* ===== TÍTULOS ===== */
+
+h1 {
+    color: #24563d;
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+h2 {
+    color: #24563d;
+    font-size: 19px;
+    margin: 24px auto 10px;
+    max-width: 1000px;
+}
+
+/* ===== FORMULÁRIO PRINCIPAL ===== */
+
+form {
+    max-width: 420px;
+    margin: 12px auto;
+    padding: 12px 18px;
+    background-color: #ffffff;
+    border: 1px solid #e1e9e2;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(32, 66, 44, 0.05);
+}
+
+label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: bold;
+    color: #35483a;
+    font-size: 13px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 7px;
+    margin-bottom: 7px;
+    border: 1px solid #cbd7cd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 13px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #367951;
+    box-shadow: 0 0 0 2px rgba(54, 121, 81, 0.12);
+}
+
+/* ===== BOTÕES ===== */
+
+button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #286644;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #194b30;
+}
+
+/* ===== TABELA DE LIVROS ===== */
+
+table {
+    width: 100%;
+    max-width: 1000px;
+    margin: 10px auto;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(32, 66, 44, 0.04);
+}
+
+th {
+    padding: 8px 10px;
+    background-color: #286644;
+    color: #ffffff;
+    text-align: left;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+td {
+    padding: 4px 10px;
+    height: 29px;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.2;
+    border-bottom: 1px solid #e5ebe6;
+}
+
+tr:hover td {
+    background-color: #f1f7f2;
+}
+
+/* ===== FORMULÁRIOS DENTRO DA TABELA ===== */
+
+td form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+/* Botões menores nas linhas da tabela */
+
+td button {
+    padding: 4px 7px;
+    font-size: 11px;
+}
+
+/* ===== TELAS PEQUENAS ===== */
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px 8px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 17px;
+    }
+
+    form {
+        max-width: 100%;
+        padding: 10px 12px;
+    }
+
+    table {
+        font-size: 11px;
+    }
+
+    th {
+        padding: 5px;
+        font-size: 11px;
+    }
+
+    td {
+        padding: 3px 5px;
+        font-size: 11px;
+    }
+}
+
+
+/* ===== NOTIFICAÇÕES DO SISTEMA ===== */
+
+.notificacao {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: max-content;
+    max-width: calc(100vw - 40px);
+    padding: 15px 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.notificacao.sucesso {
+    color: #24563d;
+    border-left: 5px solid #286644;
+}
+
+.notificacao.erro {
+    color: #a12626;
+    border-left: 5px solid #c0392b;
+}
+
+.notificacao.saindo {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+
+/* ===== POP-UP DE CONFIRMAÇÃO DE EXCLUSÃO ===== */
+
+.modal-confirmacao {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-confirmacao.ativo {
+    display: flex;
+}
+
+.caixa-confirmacao {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: aparecerModal 0.2s ease;
+}
+
+.caixa-confirmacao h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #222222;
+    font-size: 21px;
+}
+
+.caixa-confirmacao p {
+    margin-bottom: 25px;
+    color: #666666;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.botoes-confirmacao {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.botao-cancelar,
+.botao-excluir {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao-cancelar {
+    background-color: #eeeeee;
+    color: #333333;
+}
+
+.botao-excluir {
+    background-color: #c0392b;
+    color: #ffffff;
+}
+
+.botao-cancelar:hover {
+    background-color: #dddddd;
+}
+
+.botao-excluir:hover {
+    background-color: #a93226;
+}
+
+@keyframes aparecerModal {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+.botao-cancelar-edicao {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-left: 8px;
+    background-color: #e0e0e0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.botao-cancelar-edicao:hover {
+    background-color: #cccccc;
+}

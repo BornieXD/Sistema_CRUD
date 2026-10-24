@@ -2,6 +2,9 @@
 
 include 'conexão.php';
 
+$mensagem = "";
+$tipo_mensagem = "sucesso";
+
 // Cadastrar produto
 if (isset($_POST['cadastrar'])) {
 
@@ -16,10 +19,11 @@ if (isset($_POST['cadastrar'])) {
 
     $stm->bind_param("ssdi", $nome, $autor, $preco, $quantidade);
 
-    if($stm->execute()) {
-        echo "Produto cadastrado com sucesso!";
+    if ($stm->execute()) {
+        $mensagem = "Produto cadastrado com sucesso!";
     } else {
-        echo "Erro ao cadastrar produto.!";
+        $mensagem = "Erro ao cadastrar produto!";
+        $tipo_mensagem = "erro";
     }
 
     $stm->close();
@@ -35,13 +39,12 @@ if(isset($_POST['excluir'])) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
-    if  ($stmt->execute()) {
-        echo "Produto excluído com sucesso!";
+    if ($stmt->execute()) {
+        $mensagem = "Produto excluído com sucesso!";
     } else {
-        echo "Erro ao excluir produto.";
+        $mensagem = "Erro ao excluir produto.";
+        $tipo_mensagem = "erro";
     }
-
-    $stmt->close();
 }
 
 // Buscar produto para edição
@@ -87,9 +90,10 @@ if (isset($_POST['atualizar'])) {
     );
 
     if ($stmt->execute()) {
-        echo "Produto alterado com sucesso!";
+        $mensagem = "Produto alterado com sucesso!";
     } else {
-        echo "Erro ao alterar produto.";
+        $mensagem = "Erro ao alterar produto.";
+        $tipo_mensagem = "erro";
     }
 
     $stmt->close();
@@ -109,10 +113,17 @@ $resultado = $conn->query($sql_produtos);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
     <title>Produtos - Livraria</title>
 </head>
 <body>
     
+    <?php if (!empty($mensagem)) { ?>
+        <div class="notificacao <?php echo $tipo_mensagem; ?>">
+            <?php echo htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8'); ?>
+        </div>
+    <?php } ?>
+
      <h1>Cadastro de Produtos</h1>
 
      <form method="POST">
@@ -167,6 +178,10 @@ $resultado = $conn->query($sql_produtos);
         <br><br>
 
         <button type="submit" name="atualizar">Salvar alterações</button>
+
+        <a href="produtos.php" class="botao-cancelar-edicao">
+            Cancelar edição
+        </a>
     </form>
 <?php } ?>
 
@@ -192,7 +207,8 @@ $resultado = $conn->query($sql_produtos);
             <td><?php echo htmlspecialchars($produto['preco']); ?></td>
             <td><?php echo htmlspecialchars($produto['quantidade']); ?></td>
             
-            <td>
+        <td>
+
     <form method="POST">
         <input type="hidden" name="id"
                value="<?php echo $produto['id']; ?>">
@@ -201,11 +217,10 @@ $resultado = $conn->query($sql_produtos);
             Editar
         </button>
 
-
         <button type="submit" name="excluir"
-                onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+            onclick="return confirmarExclusao(this.form);">
             Excluir
-         </button>
+        </button>
 
     </form>
 </td>
@@ -215,6 +230,87 @@ $resultado = $conn->query($sql_produtos);
         <?php } ?>
 
 </table>
-    
+
+
+<div id="modalConfirmacao" class="modal-confirmacao">
+    <div class="caixa-confirmacao">
+        <h2>Confirmar exclusão</h2>
+
+        <p>
+            Tem certeza que deseja excluir este produto?
+            Essa ação não poderá ser desfeita.
+        </p>
+
+        <div class="botoes-confirmacao">
+            <button type="button"
+                    class="botao-cancelar"
+                    onclick="fecharConfirmacao()">
+                Cancelar
+            </button>
+
+            <button type="button"
+                    class="botao-excluir"
+                    onclick="executarExclusao()">
+                Excluir
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const notificacoes = document.querySelectorAll(".notificacao");
+
+        notificacoes.forEach(function (notificacao) {
+            setTimeout(function () {
+                notificacao.classList.add("saindo");
+
+                setTimeout(function () {
+                    notificacao.remove();
+                }, 1000);
+            }, 3000);
+        });
+    });
+
+    let formularioExclusao = null;
+
+    function confirmarExclusao(formulario) {
+        formularioExclusao = formulario;
+
+        document.getElementById("modalConfirmacao")
+            .classList.add("ativo");
+
+        return false;
+    }
+
+    function fecharConfirmacao() {
+        document.getElementById("modalConfirmacao")
+            .classList.remove("ativo");
+
+        formularioExclusao = null;
+    }
+
+    function executarExclusao() {
+        if (formularioExclusao) {
+            const formulario = formularioExclusao;
+
+            fecharConfirmacao();
+
+            formulario.requestSubmit(
+                formulario.querySelector('button[name="excluir"]')
+            );
+        }
+    }
+
+    document.getElementById("modalConfirmacao")
+        .addEventListener("click", function(evento) {
+            if (evento.target === this) {
+                fecharConfirmacao();
+            }
+        });
+
+</script>
+
 </body>
 </html>
