@@ -1,6 +1,13 @@
 <?php
 
-include 'conexão.php';
+session_start();
+
+if (!isset($_SESSION["usuario_id"])) {
+    header("Location: inicio.php");
+    exit;
+}
+
+require_once "conexão.php";
 
 $mensagem = "";
 $tipo_mensagem = "sucesso";
