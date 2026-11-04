@@ -124,7 +124,9 @@ $resultado = $conn->query($sql_produtos);
     <title>Produtos - Livraria</title>
 </head>
 <body>
-    
+
+    <a href="logout.php" class="botao-sair">Sair da área administrativa</a>
+
     <?php if (!empty($mensagem)) { ?>
         <div class="notificacao <?php echo $tipo_mensagem; ?>">
             <?php echo htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8'); ?>

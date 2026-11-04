@@ -31,16 +31,20 @@ $resultado = $conn->query($sql);
 
 <body>
 
+<div class="cabecalho-cliente">
+
     <h1>Catálogo de Livros</h1>
 
-    <p>
+    <h2>
         Bem-vindo(a),
         <strong>
             <?php echo htmlspecialchars($_SESSION["cliente_nome"], ENT_QUOTES, "UTF-8"); ?>
         </strong>!
-    </p>
+    </h2>
 
     <p>Confira os livros disponíveis em nossa livraria.</p>
+
+</div>
 
     <form method="GET" action="catalogo.php">
         <label for="pesquisa">Pesquisar por título ou autor:</label>
@@ -118,15 +122,22 @@ $resultado = $conn->query($sql);
 
         </table>
 
-    <?php } else { ?>
+<?php } else { ?>
 
-        <p>Nenhum livro encontrado.</p>
+    <div class="mensagem-vazia">
+        <h3>Nenhum livro encontrado.</h3>
+        <p>Não encontramos livros disponíveis para sua pesquisa.</p>
+    </div>
 
-    <?php } ?>
+<?php } ?>
 
     <br>
 
-    <a href="logout_cliente.php">Sair da conta</a>
+    <div class="area-sair-cliente">
+    <a href="logout_cliente.php" class="botao-sair">
+        Sair da conta
+    </a>
+</div>
 
 </body>
 </html>
