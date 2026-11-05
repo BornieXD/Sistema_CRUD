@@ -15,3 +15,19 @@ HTML/CSS
 SQL
 
 Projeto desenvolvido para fins acadêmicos.
+
+## Funcionalidades adicionadas
+
+### Área administrativa
+- Cadastro, listagem, edição e exclusão de administradores em `administradores.php`.
+- A senha é armazenada com `password_hash()`; ao editar, deixe a senha em branco para manter a atual.
+- Um administrador não pode excluir a própria conta pela tela de gerenciamento.
+- O sistema impede a exclusão do último administrador.
+
+### Área do cliente
+- Edição do nome e e-mail em `minha_conta.php`.
+- Alteração opcional de senha, mediante confirmação da senha atual.
+- Exclusão da própria conta mediante confirmação da senha e token CSRF.
+
+
+

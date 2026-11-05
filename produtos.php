@@ -7,7 +7,7 @@ if (!isset($_SESSION["usuario_id"])) {
     exit;
 }
 
-require_once "conexão.php";
+require_once "conexao.php";
 
 $mensagem = "";
 $tipo_mensagem = "sucesso";
@@ -125,7 +125,14 @@ $resultado = $conn->query($sql_produtos);
 </head>
 <body>
 
-    <a href="logout.php" class="botao-sair">Sair da área administrativa</a>
+    <header class="topo-pagina">
+    <div><span class="marca">Livraria</span><span class="submarca">Painel administrativo</span></div>
+    <nav class="navegacao">
+        <a class="ativo" href="produtos.php">Livros</a>
+        <a href="administradores.php">Administradores</a>
+        <a class="sair" href="logout.php">Sair</a>
+    </nav>
+</header>
 
     <?php if (!empty($mensagem)) { ?>
         <div class="notificacao <?php echo $tipo_mensagem; ?>">

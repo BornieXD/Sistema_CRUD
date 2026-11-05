@@ -17,7 +17,7 @@ if (isset($_SESSION["cliente_id"])) {
     exit;
 }
 
-require_once "conexão.php";
+require_once "conexao.php";
 
 // Verifica se existe algum administrador cadastrado.
 $sql = "SELECT COUNT(*) AS total FROM usuarios";
@@ -41,6 +41,10 @@ $destino_admin = ($dados["total"] == 0)
 </head>
 
 <body>
+
+    <?php if (isset($_GET["conta"]) && $_GET["conta"] === "excluida") { ?>
+        <div class="notificacao sucesso">Sua conta foi excluída com sucesso.</div>
+    <?php } ?>
 
     <h1>Bem-vindo à Livraria!</h1>
 

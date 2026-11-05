@@ -9,7 +9,7 @@ if (!isset($_SESSION["cliente_id"])) {
     exit;
 }
 
-require_once "conexão.php";
+require_once "conexao.php";
 
 // Busca os livros cadastrados pelo administrador
 $sql = "SELECT id, nome, autor, preco, quantidade FROM produtos ORDER BY nome";
@@ -30,6 +30,15 @@ $resultado = $conn->query($sql);
 </head>
 
 <body>
+
+<header class="topo-pagina">
+    <div><span class="marca">Livraria</span><span class="submarca">Área do cliente</span></div>
+    <nav class="navegacao">
+        <a class="ativo" href="catalogo.php">Catálogo</a>
+        <a href="minha_conta.php">Minha conta</a>
+        <a class="sair" href="logout_cliente.php">Sair</a>
+    </nav>
+</header>
 
 <div class="cabecalho-cliente">
 
@@ -133,11 +142,7 @@ $resultado = $conn->query($sql);
 
     <br>
 
-    <div class="area-sair-cliente">
-    <a href="logout_cliente.php" class="botao-sair">
-        Sair da conta
-    </a>
-</div>
+
 
 </body>
 </html>

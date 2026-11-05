@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
+    CONSTRAINT uq_usuarios_email UNIQUE (email),
     senha VARCHAR(255) NOT NULL
 );
