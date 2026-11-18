@@ -29,5 +29,11 @@ Projeto desenvolvido para fins acadêmicos.
 - Alteração opcional de senha, mediante confirmação da senha atual.
 - Exclusão da própria conta mediante confirmação da senha e token CSRF.
 
+# 🌐 Projeto publicado
+
+O sistema está hospedado online pelo InfinityFree.
+
+**Acesse o projeto:** https://sistemacrud.freedev.app/Sistema_CRUD%20-%20Copia/inicio.php
+
 
 
